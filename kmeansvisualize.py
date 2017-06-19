@@ -3,6 +3,7 @@ from sklearn.datasets import load_iris
 import matplotlib.pyplot as plt
 import numpy as np
 import random
+import seaborn as sns
 from six.moves import input
 
 
@@ -62,13 +63,17 @@ def plotme(data, target, centroids=[], legends=False, iter=None):
 
 		plt.title('Iris dataset with 3 clusters and unknown outcomes : Iter '+str(iter))
 	
-	plt.pause(2)
+	plt.pause(1)
 
 
 def kmeans(data, targets, k=2, iters=10,plotdata=None):
 
-	# chooses k random different points from the dataset as intitial centroid
-	centroids = random.sample(range(data.shape[0]),k)
+	# good initial centroids found by inspection
+	centroids = np.array([63, 53, 48])
+
+	# Comment the above line and uncoment the line below to
+	# chooses k random different points from the dataset as intitial centroids
+	#centroids = random.sample(range(data.shape[0]),k)
 	print(centroids)
 	centroids =  np.array([data[i] for i in centroids])
 
