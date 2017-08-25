@@ -29,8 +29,9 @@ def compute_centroids(data, centroids):
 
 	return new_centroids, classes
 
-def plotme(data, target, centroids=[], legends=False, iter=None):
-	plt.clf() # Draw new figure each time
+def plotme(data, target, centroids=[], legends=False, iter=None,clear=False):
+	if clear:
+		plt.clf() # Draw new figure each time
 
 	# Ref: http://www.dummies.com/programming/big-data/data-science/how-to-visualize-the-clusters-in-a-k-means-unsupervised-learning-model/
 	class_1 = data[target==0]
@@ -52,11 +53,11 @@ def plotme(data, target, centroids=[], legends=False, iter=None):
 
 	else:
 		c1 = plt.scatter(class_1[:,0], class_1[:,1],c='r',
-			    marker='+')	
+			    marker='o')	
 		c2 = plt.scatter(class_2[:,0], class_2[:,1],c='g',
 			    marker='o')
 		c3 = plt.scatter(class_3[:,0], class_3[:,1],c='b',
-			    marker='*')
+			    marker='o')
 
 		if centroids!=[]:
 			plt.scatter(centroids[:,0],centroids[:,1],c='k',marker='x')
@@ -69,21 +70,28 @@ def plotme(data, target, centroids=[], legends=False, iter=None):
 def kmeans(data, targets, k=2, iters=10,plotdata=None):
 
 	# good initial centroids found by inspection
-	centroids = np.array([63, 53, 48])
+	centroid_indices = np.array([136,130,0])
+	#centroid_indices = np.array([63, 53, 48])
+
+	# bad centroids 
+	# centroid_indices = np.array([19,45,63])
 
 	# Comment the above line and uncoment the line below to
 	# chooses k random different points from the dataset as intitial centroids
-	#centroids = random.sample(range(data.shape[0]),k)
-	print(centroids)
-	centroids =  np.array([data[i] for i in centroids])
 
-	for iter in range(iters):
+	# centroid_indices = random.sample(range(data.shape[0]),k)
+	print(centroid_indices)
+	centroids =  np.array([data[i] for i in centroid_indices])
+
+	for it in range(iters):
 		centroids, classes = compute_centroids(data, centroids)
-		plotme(plotdata,classes, centroids, iter=iter+1)
+		plotme(plotdata,classes, centroids, iter=it+1)
 
-	plotme(plotdata, targets, centroids, legends=True)
-	input("Press any key to continue:")
-	plotme(plotdata, classes, iter="Final")
+	plotme(plotdata, targets, centroids, legends=True, clear = True)
+	plt.savefig("classes-known.jpg")
+	plt.pause(4)
+	plotme(plotdata, classes, iter="Final", clear = True)
+	plt.savefig("classes-unknown.jpg")
 	input("Press any key to exit:")
 
 if __name__ == '__main__':
@@ -98,4 +106,5 @@ if __name__ == '__main__':
 	plt.ion() # Interactive on
 	
 	#You can change the first argument to iris.data and remove the centroid argument in every plotme call
+	# to compute centroid on the original data, and plot on the pca reduced data
 	kmeans(pca_2d, iris.target, k=len(np.unique(iris.target)), plotdata=pca_2d)
